@@ -113,8 +113,8 @@ xui.extend({
                 var elArray = ['outer', 'top', 'bottom'],
                     wrappedE = wrapHelper(html, (elArray.indexOf(location) > -1 ? el : el.parentNode )),
                     children = wrappedE.childNodes;
-                if (location == "outer") { // .replaceWith
-                  el.parentNode.replaceChild(wrappedE, el);
+                if (location == "outer" && el.parentNode.replaceChild(wrappedE, el) ) { // .replaceWith
+                  this[j] = wrappedE; // update XUI Collection
                 } else if (location == "top") { // .prependTo
                     el.insertBefore(wrappedE, el.firstChild);
                 } else if (location == "bottom") { // .appendTo
