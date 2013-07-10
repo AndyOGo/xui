@@ -133,7 +133,7 @@ xui.extend({
             }
         }
 
-        return this;);
+        return this;
     },
 
 /**
