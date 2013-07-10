@@ -44,7 +44,13 @@ target_dir = File.dirname(target)
 Dir.mkdir(target_dir) unless File.directory?(target_dir)
 File.unlink(target) if File.exist?(target)
 
-content = hash["include"].map {|library| next if (exclude.include?(File.basename(library))); File.read(library + ".js") }
+content = hash["include"].map {|library|
+    if (exclude.include?(File.basename(library)))
+      ""
+    else
+      File.read(library + ".js")
+    end
+  }
 
 File.open(target, "w") {|op| op.puts content }
 
