@@ -84,10 +84,12 @@ xui.extend({
             }
             return this;
         }
-        return this.each(function(el) {
-            var parent, 
-                list, 
-                len, 
+
+        for( var j=0, l=this.length; j<l; j++) {
+            var el = this[j],
+                parent,
+                list,
+                len,
                 i = 0;
             if (location == "inner") { // .html
                 if (typeof html == string || typeof html == "number") {
@@ -102,8 +104,11 @@ xui.extend({
                     el.appendChild(html);
                 }
             } else {
-              if (location == 'remove') {
-                el.parentNode.removeChild(el);
+              if (location == 'remove' && el.parentNode.removeChild(el) ) {
+                for(var r=j;r<l;r++) // update XUI Collection
+                    this[r] = this[r+1];
+                delete this[r];
+                this.length--;
               } else {
                 var elArray = ['outer', 'top', 'bottom'],
                     wrappedE = wrapHelper(html, (elArray.indexOf(location) > -1 ? el : el.parentNode )),
@@ -126,7 +131,9 @@ xui.extend({
                 parent.removeChild(wrappedE);
               }
             }
-        });
+        }
+
+        return this;);
     },
 
 /**
