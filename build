@@ -20,11 +20,13 @@ profile = "core"
 minify = false
 docs = false
 extra = false
+exclude = Array.new()
 
 ARGV.each do |arg|
   case arg
     when "--minify" then minify = true
     when /^profile=(.*)$/ then profile = $1
+    when /^exclude=(.*)$/ then exclude << $1
     when "--generate-docs" then docs = true
     when /^cat=(.*)$/ then extra = $1
     when "--help" then show_usage
@@ -42,7 +44,7 @@ target_dir = File.dirname(target)
 Dir.mkdir(target_dir) unless File.directory?(target_dir)
 File.unlink(target) if File.exist?(target)
 
-content = hash["include"].map {|library| File.read(library + ".js") }
+content = hash["include"].map {|library| next if (exclude.include?(File.basename(library))); File.read(library + ".js") }
 
 File.open(target, "w") {|op| op.puts content }
 
