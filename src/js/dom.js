@@ -85,7 +85,8 @@ xui.extend({
             return this;
         }
 
-        for( var j=0, l=this.length; j<l; j++) {
+        var j, l;
+        for( j=0, l=this.length; j<l; j++) {
             var el = this[j],
                 parent,
                 list,
@@ -105,16 +106,18 @@ xui.extend({
                 }
             } else {
               if (location == 'remove' && el.parentNode.removeChild(el) ) {
-                for(var r=j;r<l;r++) // update XUI Collection
+                var r;
+                for(r=j;r<l;r++) // update XUI Collection
                     this[r] = this[r+1];
-                delete this[r];
-                this.length--;
+                delete this[l-1];
+                l--;
+                j--;
               } else {
                 var elArray = ['outer', 'top', 'bottom'],
                     wrappedE = wrapHelper(html, (elArray.indexOf(location) > -1 ? el : el.parentNode )),
                     children = wrappedE.childNodes;
-                if (location == "outer" && el.parentNode.replaceChild(wrappedE, el) ) { // .replaceWith
-                  this[j] = wrappedE; // update XUI Collection
+                if (location == "outer" ) {
+                    el.parentNode.replaceChild(wrappedE, el); // .replaceWith
                 } else if (location == "top") { // .prependTo
                     el.insertBefore(wrappedE, el.firstChild);
                 } else if (location == "bottom") { // .appendTo
@@ -124,14 +127,40 @@ xui.extend({
                 } else if (location == "after") { // .insertAfter
                     el.parentNode.insertBefore(wrappedE, el.nextSibling);
                 }
-                var parent = wrappedE.parentNode;
+
+                var parent = wrappedE.parentNode,
+                    ins,
+                    inserted = [];
+
                 while(children.length) {
-                  parent.insertBefore(children[0], wrappedE);
+                  ins = parent.insertBefore(children[0], wrappedE);
+                  if( ins )
+                    inserted.push( ins );
                 }
                 parent.removeChild(wrappedE);
+
+                // update XUI Collection
+                var insertedLength = inserted.length;
+
+                if( location == 'outer' && insertedLength ) {
+
+                    if( insertedLength > 1 )
+                        for( var end = l-1; end >=j; end++ )
+                            this[end+insertedLength-1] = this[end];
+
+                    for( var o = 0; o<insertedLength; o++ )
+                        this[j+o] = inserted[o];
+
+                    // update keys
+                    j += insertedLength-1;
+                    l += insertedLength-1;
+                }
               }
             }
         }
+
+        // don't forget to update the new length
+        this.length = l;
 
         return this;
     },
