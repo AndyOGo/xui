@@ -145,7 +145,7 @@ xui.extend({
                 if( location == 'outer' && insertedLength ) {
 
                     if( insertedLength > 1 )
-                        for( var end = l-1; end >=j; end++ )
+                        for( var end = l-1; end >=j; end-- )
                             this[end+insertedLength-1] = this[end];
 
                     for( var o = 0; o<insertedLength; o++ )
