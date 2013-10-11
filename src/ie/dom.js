@@ -85,10 +85,10 @@ xui.extend({
             return this;
         }
 
-        var j, l;
+        var j, l, returnValue = [];
         for( j=0, l=this.length; j<l; j++) {
             var el = this[j],
-                parent,
+                parent = el.parentNode,
                 list,
                 len,
                 i = 0;
@@ -105,7 +105,7 @@ xui.extend({
                     el.appendChild(html);
                 }
             } else {
-              if (location == 'remove' && el.parentNode.removeChild(el) ) {
+              if (location == 'remove' && parent.removeChild(el) ) {
                 var r;
                 for(r=j;r<l;r++) // update XUI Collection
                     this[r] = this[r+1];
@@ -114,30 +114,39 @@ xui.extend({
                 j--;
               } else {
                 var elArray = ['outer', 'top', 'bottom'],
-                    wrappedE = wrapHelper(html, (elArray.indexOf(location) > -1 ? el : el.parentNode )),
-                    children = wrappedE.childNodes;
-                if (location == "outer" ) {
-                    el.parentNode.replaceChild(wrappedE, el); // .replaceWith
-                } else if (location == "top") { // .prependTo
-                    el.insertBefore(wrappedE, el.firstChild);
-                } else if (location == "bottom") { // .appendTo
-                    el.insertBefore(wrappedE, null);
-                } else if (location == "before") { // .insertBefore
-                    el.parentNode.insertBefore(wrappedE, el);
-                } else if (location == "after") { // .insertAfter
-                    el.parentNode.insertBefore(wrappedE, el.nextSibling);
+                    wrappedE = wrapHelper(html, (elArray.indexOf(location) > -1 ? el : parent )),
+                    children = wrappedE.childNodes,
+                    target = null;
+
+                switch( location ) {
+                    case 'outer':
+                        parent.replaceChild(wrappedE, el); // .replaceWith
+                        break;
+                    case 'top':
+                        target = el.firstChild;
+                    case 'bottom':
+                        el.insertBefore(wrappedE, target);
+                        break;
+                    case 'after':
+                         target = el.nextSibling;
+                    case 'before':
+                        parent.insertBefore(wrappedE, target);
+                        break;
                 }
 
-                var parent = wrappedE.parentNode,
+                var wParent = wrappedE.parentNode,
                     ins,
                     inserted = [];
 
                 while(children.length) {
-                  ins = parent.insertBefore(children[0], wrappedE);
-                  if( ins )
-                    inserted.push( ins );
+                    ins = wParent.insertBefore(children[0], wrappedE);
+                    if( ins ) {
+                        inserted.push( ins );
+                        if( location == 'after' || location == 'before' )
+                            returnValue.push(ins);
+                    }
                 }
-                parent.removeChild(wrappedE);
+                wParent.removeChild(wrappedE);
 
                 // update XUI Collection
                 var insertedLength = inserted.length;
@@ -162,7 +171,9 @@ xui.extend({
         // don't forget to update the new length
         this.length = l;
 
-        return this;
+        var rl = returnValue.length;
+
+        return rl === 0 ? this : rl === 1 ? returnValue[0]: returnValue;
     },
 
 /**
