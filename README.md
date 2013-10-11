@@ -23,6 +23,7 @@ To build xui, you will need _Ruby_, and if minifying, _Java_ as well:
     $ ./build --minify        # Builds xui and minifies (Java required)
     $ ./build --cat=path/f.js # Builds xui and appends the contents of f.js to the built files under lib/
     $ ./build exclude=***     # Builds xui excluding specified widget
+    $ ./build suffix=***      # Builds xui add specified suffix after .js
 
 Generating Documentation
 ------------------------

@@ -21,11 +21,13 @@ minify = false
 docs = false
 extra = false
 exclude = Array.new()
+suffix = ""
 
 ARGV.each do |arg|
   case arg
     when "--minify" then minify = true
     when /^profile=(.*)$/ then profile = $1
+    when /^suffix=(.*)$/ then suffix = $1
     when /^exclude=(.*)$/ then exclude << $1
     when "--generate-docs" then docs = true
     when /^cat=(.*)$/ then extra = $1
@@ -38,7 +40,7 @@ end
 hash = YAML.load_file(File.join(PROFILE_PATH, profile) + ".js")
 
 # clear previous file
-target = hash["out"] + "-" + version + ".js"
+target = hash["out"] + "_" + version + ".js" + suffix
 target_dir = File.dirname(target)
 
 Dir.mkdir(target_dir) unless File.directory?(target_dir)
@@ -59,7 +61,7 @@ if extra
 end
 
 if minify
-  minified_filename = target.sub(/\.js$/, '.min.js')
+  minified_filename = target.sub(/\.js/, '.min.js')
   `java -jar util/compiler.jar --js=#{ target } \
   --js_output_file=#{ minified_filename }`
 end
