@@ -1,5 +1,5 @@
 {
-    out: "lib/xui-ie",
+    out: "lib/xui_ie",
     include: [
         "src/header",
         "src/base",
