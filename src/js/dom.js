@@ -116,6 +116,7 @@ xui.extend({
                 var elArray = ['outer', 'top', 'bottom'],
                     wrappedE = wrapHelper(html, (elArray.indexOf(location) > -1 ? el : parent )),
                     children = wrappedE.childNodes,
+                    targetSet = !1,
                     target = null;
 
                 switch( location ) {
@@ -129,7 +130,10 @@ xui.extend({
                         break;
                     case 'after':
                          target = el.nextSibling;
+                         targetSet = !0;
                     case 'before':
+                        if( !targetSet )
+                            target = el;
                         parent.insertBefore(wrappedE, target);
                         break;
                 }
