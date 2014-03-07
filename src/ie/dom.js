@@ -85,7 +85,7 @@ xui.extend({
             return this;
         }
 
-        var j, l, returnValue = [];
+        var j, l, returnValue = [], typeOfHtml = typeof html;
         for( j=0, l=this.length; j<l; j++) {
             var el = this[j],
                 parent = el.parentNode,
@@ -93,13 +93,9 @@ xui.extend({
                 len,
                 i = 0;
             if (location == "inner") { // .html
-                if (typeof html == string || typeof html == "number") {
+                if (typeOfHtml == string || typeOfHtml == "number") {
                     el.innerHTML = html;
-                    list = el.getElementsByTagName('SCRIPT');
-                    len = list.length;
-                    for (; i < len; i++) {
-                        eval(list[i].text);
-                    }
+                    executeScripts( el );
                 } else {
                     el.innerHTML = '';
                     el.appendChild(html);
@@ -145,6 +141,9 @@ xui.extend({
                 while(children.length) {
                     ins = wParent.insertBefore(children[0], wrappedE);
                     if( ins ) {
+                        if (typeOfHtml == string || typeOfHtml == "number")
+                            executeScripts( ins );
+
                         inserted.push( ins );
                         if( location == 'after' || location == 'before' )
                             returnValue.push(ins);
@@ -269,4 +268,23 @@ function clean(collection) {
             n = nx;
         }
     });
+}
+
+function executeScripts(dom) {
+    var list = dom.getElementsByTagName('SCRIPT'),
+        script,
+        newScript,
+        l = list.length,
+        i=0;
+
+    for (; i < l; i++) {
+        script = list[i];
+
+        if( script.src ) {
+            newScript = document.createElement('script');
+            newScript.src = script.src;
+            script.parentNode.replaceChild( script, newScript);
+        } else
+            eval(script.text);
+    }
 }
