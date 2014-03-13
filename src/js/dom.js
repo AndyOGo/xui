@@ -271,7 +271,7 @@ function clean(collection) {
 }
 
 function executeScripts(dom) {
-    var list = dom.getElementsByTagName('SCRIPT'),
+    var list = x$('SCRIPT', dom),
         script,
         newScript,
         l = list.length,
