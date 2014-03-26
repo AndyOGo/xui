@@ -169,7 +169,7 @@ xui.extend({
   	}
 });
 
-"click load submit touchstart touchmove touchend touchcancel gesturestart gesturechange gestureend orientationchange".split(' ').forEach(function (event) {
+arrForEach("click load submit touchstart touchmove touchend touchcancel gesturestart gesturechange gestureend orientationchange".split(' '), function (event) {
   xui.fn[event] = function(action) { return function (fn) { return fn ? this.on(action, fn) : this.fire(action); }; }(event);
 });
 

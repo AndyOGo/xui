@@ -31,33 +31,55 @@ window.x$ = window.xui = xui = function(q, context) {
 };
 
 // patch in forEach to help get the size down a little and avoid over the top currying on event.js and dom.js (shortcuts)
-if (! [].forEach) {
-    Array.prototype.forEach = function(fn) {
-        var len = this.length || 0,
+arrForEach = (! [].forEach) ? function(arr, fn) {
+        var len = arr.length || 0,
             i = 0,
             that = arguments[1]; // wait, what's that!? awwww rem. here I thought I knew ya!
                                  // @rem - that that is a hat tip to your thats :)
 
         if (typeof fn == 'function') {
             for (; i < len; i++) {
-                fn.call(that, this[i], i, this);
+                fn.call(that, arr[i], i, arr);
             }
         }
+    } : function( arr, fn) {
+      arr.forEach(fn);
     };
-}
 /* 
  * Patch indexOf for internet explorer: http://soledadpenades.com/2007/05/17/arrayindexof-in-internet-explorer/ 
  */
-if(!Array.indexOf){
-  Array.prototype.indexOf = function(obj) {
-    for(var i = 0; i < this.length; i++) {
-      if(this[i] == obj){
-          return i;
+arrIndexOf = (!Array.prototype.indexOf) ? function (arr, searchElement /*, fromIndex */ ) {
+    "use strict";
+    if (arr === null) {
+      throw new TypeError();
+    }
+    var t = Object(arr);
+    var len = t.length >>> 0;
+    if (len === 0) {
+      return -1;
+    }
+    var n = 0;
+    if (arguments.length > 1) {
+      n = Number(arguments[1]);
+      if (n != n) { // shortcut for verifying if it's NaN
+        n = 0;
+      } else if (n !== 0 && n != Infinity && n != -Infinity) {
+        n = (n > 0 || -1) * Math.floor(Math.abs(n));
+      }
+    }
+    if (n >= len) {
+      return -1;
+    }
+    var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+    for (; k < len; k++) {
+      if (k in t && t[k] === searchElement) {
+        return k;
       }
     }
     return -1;
-  }
-}
+  } : function(arr, searchElement, fromIndex) {
+    return arr.indexOf( searchElement, fromIndex);
+  };
 /*
  * Array Remove - By John Resig (MIT Licensed) 
  */
@@ -173,7 +195,7 @@ xui.fn = xui.prototype = {
               } else if (tagExpr.test(q)) {
                   tempNode = document.createElement('i');
                   tempNode.innerHTML = q;
-                  slice(tempNode.childNodes).forEach(function (el) {
+                  arrForEach( slice(tempNode.childNodes), function (el) {
                     ele.push(el);
                   });
               } else {
@@ -237,9 +259,9 @@ q.toString() == '[object HTMLCollection]' || typeof q.length == 'number') {
     reduce: function(elements, b) {
         var a = [],
         elements = elements || slice(this);
-        elements.forEach(function(el) {
+        arrForEach(elements, function(el) {
             // question the support of [].indexOf in older mobiles (RS will bring up 5800 to test)
-            if (a.indexOf(el, 0, b) < 0)
+            if (arrIndexOf(a, el, 0, b) < 0)
             a.push(el);
         });
 

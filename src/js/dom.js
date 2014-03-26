@@ -110,7 +110,7 @@ xui.extend({
                 j--;
               } else {
                 var elArray = ['outer', 'top', 'bottom'],
-                    wrappedE = wrapHelper(html, (elArray.indexOf(location) > -1 ? el : parent )),
+                    wrappedE = wrapHelper(html, (arrIndexOf(elArray, location) > -1 ? el : parent )),
                     children = wrappedE.childNodes,
                     targetSet = !1,
                     target = null;
@@ -225,7 +225,7 @@ xui.extend({
         }
     }
 });
-"inner outer top bottom remove before after".split(' ').forEach(function (method) {
+arrForEach("inner outer top bottom remove before after".split(' '), function (method) {
   xui.fn[method] = function(where) { return function (html) { return this.html(where, html); }; }(method);
 });
 // private method for finding a dom element

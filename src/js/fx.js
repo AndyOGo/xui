@@ -58,7 +58,7 @@ xui.extend({
     // creates an options obj for emile
     var emileOpts = function(o) {
       var options = {};
-      "duration after easing".split(' ').forEach( function(p) {
+      arrForEach("duration after easing".split(' '), function(p) {
         if (props[p]) {
             options[p] = props[p];
             delete props[p];
@@ -85,7 +85,7 @@ xui.extend({
     /* wtf is this?
 		if (props instanceof Array) {
 		    // animate each passing the next to the last callback to enqueue
-		    props.forEach(function(a){
+		    arrForEach(props, function(a){
 		      
 		    });
 		}

@@ -120,7 +120,7 @@ xui.extend({
     addClass: function(className) {
         var cs = className.split(' ');
         return this.each(function(el) {
-            cs.forEach(function(clazz) {
+            arrForEach(cs, function(clazz) {
               if (hasClass(el, clazz) === false) {
                 el.className = trim(el.className + ' ' + clazz);
               }
@@ -159,7 +159,7 @@ xui.extend({
       return this.length && (function() {
               var hasIt = true;
               self.each(function(el) {
-                cs.forEach(function(clazz) {
+                arrForEach(cs, function(clazz) {
                   if (hasClass(el, clazz)) {
                       if (callback) callback(el);
                   } else hasIt = false;
@@ -196,7 +196,7 @@ xui.extend({
         else {
           var cs = className.split(' ');
           this.each(function(el) {
-            cs.forEach(function(clazz) {
+            arrForEach(cs, function(clazz) {
               el.className = trim(el.className.replace(getClassRegEx(clazz), '$1'));
             });
           });
@@ -206,7 +206,7 @@ xui.extend({
     toggleClass: function(className) {
         var cs = className.split(' ');
         return this.each(function(el) {
-            cs.forEach(function(clazz) {
+            arrForEach(cs, function(clazz) {
               if (hasClass(el, clazz)) el.className = trim(el.className.replace(getClassRegEx(clazz), '$1'));
               else el.className = trim(el.className + ' ' + clazz);
             });

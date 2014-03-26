@@ -84,11 +84,11 @@ xui.extend({
         var event = document.createEventObject();
         event.data = data || {};
         event.eventName = type;
-        if (ieEvents.indexOf(type) > -1)
+        if (arrIndexOf(ieEvents, type) > -1)
           el.fireEvent("on" + type, event);
         else {
           var responders = _getRespondersForEvent(_getEventID(el), type);
-          responders.forEach(function(r) {
+          arrForEach(responders, function(r) {
             r.call(el, event);
           });
         }
@@ -98,7 +98,7 @@ xui.extend({
 // --
 });
 
-stockEvents.forEach(function (event) {
+arrForEach(stockEvents, function (event) {
   xui.fn[event] = function(action) { return function (fn) { return fn ? this.on(action, fn) : this.fire(action); }; }(event);
 });
 
